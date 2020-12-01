@@ -3,20 +3,37 @@ const faunaClient = new faunadb.Client({ secret: process.env.FAUNA_SECRET });
 const q = faunadb.query;
 
 const getSnippets = async () => {
-    const { data } = await faunaClient.query(
-        q.Map(
-            q.Paginate(q.Documents(q.Collection('snippets'))),
-            q.Lambda('ref', q.Get(q.Var('ref')))
-        )
-    );
-    const snippets = data.map((snippet) => {
-        snippet.id = snippet.ref.id;
-        delete snippet.ref;
-        return snippet;
-    });
+     const {data} = await faunaClient.query(
+            q.Map(
+                q.Paginate(q.Documents(q.Collection('snippets'))),
+                q.Lambda('ref',q.Get(q.Var('ref')))
+            )
 
-    return snippets;
-};
+        );
+        const snippets = data.map((snippet) => {
+            snippet.id = snippet.ref.id;
+            delete snippet.ref;
+            return snippet ;
+        });
+
+        return snippets;
+
+    };
+
+//     const { data } = await faunaClient.query(
+//         q.Map(
+//             q.Paginate(q.Documents(q.Collection('snippets'))),
+//             q.Lambda('ref', q.Get(q.Var('ref')))
+//         )
+//     );
+//     const snippets = data.map((snippet) => {
+//         snippet.id = snippet.ref.id;
+//         delete snippet.ref;
+//         return snippet;
+//     });
+
+//     return snippets;
+// };
 
 const getSnippetById = async (id) => {
     const snippet = await faunaClient.query(
